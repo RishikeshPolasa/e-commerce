@@ -2,7 +2,7 @@ require("dotenv").config();
 import query from "../utilities/sqlConnection";
 const bcrypt = require("bcryptjs");
 import { v4 as uuidv4 } from "uuid";
-import { AuthorizationError, ForbiddenError } from "../utilities/Error";
+import { AuthorizationError, ForbiddenError } from "../utilities/error";
 import { comparePassword, generateToken } from "../middleware";
 const signupService = async (email_id: any, password: any, name: any) => {
   const encryptedPassword = await bcrypt.hash(password, 10);
