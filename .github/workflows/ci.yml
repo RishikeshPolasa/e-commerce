@@ -15,8 +15,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: "16.x"
-        cache: "npm"
+        node-version: '16.13.2'
+        cache: npm
 
     steps:
       - uses: actions/checkout@v3
