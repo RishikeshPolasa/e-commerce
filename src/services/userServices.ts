@@ -4,14 +4,19 @@ const bcrypt = require("bcryptjs");
 import { v4 as uuidv4 } from "uuid";
 import { AuthorizationError, ForbiddenError } from "../utilities/error";
 import { comparePassword, generateToken } from "../middleware";
-const signupService = async (email_id: any, password: any, name: any) => {
+const signupService = async (
+  email_id: any,
+  password: any,
+  name: any,
+  user_type: any
+) => {
   const encryptedPassword = await bcrypt.hash(password, 10);
   const user = {
     id: uuidv4(),
     name,
     email_id,
     password: encryptedPassword,
-    type: "buyer",
+    type: user_type,
   };
   const token = generateToken(user);
   await query(
@@ -26,7 +31,7 @@ const signupService = async (email_id: any, password: any, name: any) => {
 };
 const ValidUser = async (emailId: any, password: any) => {
   const user = await query("select * from users where email_id = ?", [emailId]);
-  if (!user[0]) {
+  if (!user.length) {
     throw new AuthorizationError("No user exists!", 401);
   }
   let isValidPassword = await comparePassword(password, user[0].password);

@@ -1,3 +1,4 @@
+require("dotenv").config({ path: "./configs/.env" });
 import createServer from "./src/utilities/server";
 const port = process.env.PORT || 3000;
 const app = createServer();
