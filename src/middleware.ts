@@ -1,19 +1,25 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const config = process.env;
 const secretKey = process.env.SECRET_KEY || "9090";
+
 async function verifyToken(ctx: any, next: any) {
+  const token = ctx.header.token;
+
+  if (!token) {
+    ctx.throw(401, "Token should not be empty");
+  }
+
+  const jwtToken = token.split(" ")[1];
+
   try {
-    if (!ctx.header.token) {
-      throw new Error("Token should not be empty");
-    }
-    const bearerHeader = ctx.get("token");
-    const token = ctx.request.header.token.split(" ")[1];
-    ctx.state.jwtPayload = jwt.verify(token, secretKey);
+    const state = jwt.verify(jwtToken, secretKey);
+    ctx.state.jwtPayload = state;
     await next();
-  } catch (error: any) {
-    ctx.status = 401;
-    ctx.body = error;
+  } catch (err: any) {
+    const status = err.status || 500; // default to 500 if status is undefined
+    const message = err.message || "Internal Server Error";
+    ctx.throw(status, message);
   }
 }
 

@@ -1,16 +1,17 @@
 import { signupService, ValidUser } from "../services/userServices";
 import { generateToken } from "../middleware";
+import { BadRequestError } from "../utilities/error";
 const userSingupController = async (ctx: any) => {
   try {
-    const { name, email_id, password } = ctx.request.body;
-    if (!email_id || !password || !name) {
-      throw new Error("All feilds are required");
+    const { name, email_id, password, user_type } = ctx.request.body;
+    if (!email_id || !password || !name || !user_type) {
+      throw new BadRequestError("All feilds are required", 400);
     }
-    const res = await signupService(email_id, password, name);
+    const res = await signupService(email_id, password, name, user_type);
     ctx.body = res;
     ctx.status = 200;
   } catch (error: any) {
-    ctx.body = error;
+    ctx.body = error.message;
     ctx.status = error.statusCode;
   }
 };
@@ -30,7 +31,7 @@ const userLoginController = async (ctx: any) => {
     };
     ctx.status = 201;
   } catch (error: any) {
-    ctx.error = error;
+    ctx.body = error.message;
     ctx.status = 400;
   }
 };
