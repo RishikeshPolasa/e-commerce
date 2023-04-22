@@ -1,4 +1,8 @@
-import { getListOfSellers } from "../services/sellerServices";
+import {
+  getListOfSellers,
+  createCatalogService,
+} from "../services/sellerServices";
+import { ForbiddenError } from "../utilities/error";
 
 const sellerController = async (ctx: any) => {
   try {
@@ -17,4 +21,22 @@ const sellerController = async (ctx: any) => {
   }
 };
 
-export { sellerController };
+const createCatalogController = async (ctx: any) => {
+  try {
+    const { listOfProducts } = ctx.request.body;
+    const userType = ctx.state.userDetails[0].user_type;
+    if (userType === "buyer") {
+      throw new ForbiddenError("User does not have permission", 403);
+    }
+    await createCatalogService(ctx, listOfProducts);
+    ctx.body = {
+      message: "Successfully created catalog",
+    };
+    ctx.statusCode = 201;
+  } catch (error: any) {
+    ctx.body = error.message;
+    ctx.status = error.statusCode;
+  }
+};
+
+export { sellerController, createCatalogController };

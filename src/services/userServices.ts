@@ -2,7 +2,11 @@ require("dotenv").config();
 import query from "../utilities/sqlConnection";
 const bcrypt = require("bcryptjs");
 import { v4 as uuidv4 } from "uuid";
-import { AuthorizationError, ForbiddenError } from "../utilities/error";
+import {
+  AuthorizationError,
+  ForbiddenError,
+  ServerNotFoundError,
+} from "../utilities/error";
 import { comparePassword, generateToken } from "../middleware";
 const signupService = async (
   email_id: any,
@@ -40,4 +44,13 @@ const ValidUser = async (emailId: any, password: any) => {
   }
   return user;
 };
-export { signupService, ValidUser };
+
+const getUserByEmailId = async (emailId: any) => {
+  const user = await query("select * from users where email_id = ?", [emailId]);
+  if (!user.length) {
+    throw new ServerNotFoundError("User not found", 404);
+  }
+  return user;
+};
+
+export { signupService, ValidUser, getUserByEmailId };
