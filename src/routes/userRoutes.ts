@@ -7,5 +7,5 @@ const bodyParser = require("koa-bodyparser");
 const userRouter = new route();
 
 userRouter.post("/signup", bodyParser(), userSingupController);
-userRouter.post("/login", bodyParser(), userLoginController);
+userRouter.get("/login", bodyParser(), userLoginController);
 export default userRouter;
