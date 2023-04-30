@@ -1,7 +1,18 @@
+import { AuthorizationError } from "./utilities/error";
+import { getUserByEmailId } from "../src/services/userServices";
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const secretKey = process.env.SECRET_KEY || "9090";
+
+async function getUserInfo(decoded: any) {
+  const { userId, userName, userEmail } = decoded;
+  return {
+    userId,
+    userName,
+    userEmail,
+  };
+}
 
 async function verifyToken(ctx: any, next: any) {
   const token = ctx.header.token;
@@ -14,7 +25,17 @@ async function verifyToken(ctx: any, next: any) {
 
   try {
     const state = jwt.verify(jwtToken, secretKey);
+    const payload = await getUserInfo(state);
+    const userDetails = await getUserByEmailId(payload.userEmail).catch(
+      (error: any) => {
+        if (error.status === 404) {
+          throw new AuthorizationError("AuthorizationError", 401);
+        }
+        throw error;
+      }
+    );
     ctx.state.jwtPayload = state;
+    ctx.state.userDetails = userDetails;
     await next();
   } catch (err: any) {
     const status = err.status || 500; // default to 500 if status is undefined
