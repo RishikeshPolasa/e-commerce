@@ -1,6 +1,7 @@
 require("dotenv").config();
 import { v4 as uuidv4 } from "uuid";
 import query from "../utilities/sqlConnection";
+import { NotFoundError } from "../utilities/error";
 const getListOfSellers = async () => {
   const seller = "seller";
   const list = await query("select * from users where user_type=?", [seller]);
@@ -26,4 +27,14 @@ const createCatalogService = async (ctx: any, listOfProducts: any) => {
   return response;
 };
 
-export { getListOfSellers, createCatalogService };
+const getOrdersBySellerId = async (sellerId: any, ctx: any) => {
+  const orders = await query("select * from orders where seller_id=?", [
+    sellerId,
+  ]);
+  if (orders.length == 0) {
+    throw new NotFoundError("No orders for this seller", 404);
+  }
+  return orders;
+};
+
+export { getListOfSellers, createCatalogService, getOrdersBySellerId };

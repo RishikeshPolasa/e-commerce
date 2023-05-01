@@ -10,7 +10,7 @@ const buyerRouter = new route();
 
 buyerRouter.prefix("/api/buyer");
 
-buyerRouter.get("/", verifyToken, getAllSellersController);
+buyerRouter.get("/list_of_seller", verifyToken, getAllSellersController);
 buyerRouter.get("/seller_catalog/:seller_id", getCatalogSellerController);
 buyerRouter.post(
   "/create_catalog_order",
