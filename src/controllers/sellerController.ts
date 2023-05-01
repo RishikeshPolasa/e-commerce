@@ -1,25 +1,8 @@
 import {
-  getListOfSellers,
   createCatalogService,
+  getOrdersBySellerId,
 } from "../services/sellerServices";
 import { ForbiddenError } from "../utilities/error";
-
-const sellerController = async (ctx: any) => {
-  try {
-    const lists = await getListOfSellers();
-    const res = lists.map((list: any) => {
-      return {
-        id: list.id,
-        name: list.name,
-      };
-    });
-    ctx.body = res;
-    ctx.statusCode = 200;
-  } catch (error: any) {
-    ctx.body = error.message;
-    ctx.status = error.statusCode;
-  }
-};
 
 const createCatalogController = async (ctx: any) => {
   try {
@@ -39,4 +22,23 @@ const createCatalogController = async (ctx: any) => {
   }
 };
 
-export { sellerController, createCatalogController };
+const getOrdersBySellerIdController = async (ctx: any) => {
+  try {
+    const sellerId = ctx.state.userDetails[0].id;
+    const userType = ctx.state.userDetails[0].user_type;
+    if (userType === "buyer") {
+      throw new ForbiddenError("user does not have access", 403);
+    }
+    const orders = await getOrdersBySellerId(sellerId, ctx);
+    ctx.body = orders;
+    ctx.statusCode = 200;
+  } catch (error: any) {
+    ctx.body = error.message;
+    ctx.status = error.statusCode;
+  }
+};
+
+export {
+  createCatalogController,
+  getOrdersBySellerIdController,
+};
