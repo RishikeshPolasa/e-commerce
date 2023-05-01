@@ -3,7 +3,7 @@ class ValidationError extends Error {
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
-    this.name = "ValidationError";
+    this.name = message;
   }
 }
 
@@ -12,7 +12,7 @@ class AuthorizationError extends Error {
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
-    this.name = "AuthorizationError";
+    this.name = message;
   }
 }
 
@@ -21,7 +21,7 @@ class ServerNotFoundError extends Error {
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
-    this.name = "ServerNotFoundError";
+    this.name = message;
   }
 }
 
@@ -30,7 +30,7 @@ class ForbiddenError extends Error {
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
-    this.name = "ForbiddenError";
+    this.name = message;
   }
 }
 
@@ -39,7 +39,16 @@ class BadRequestError extends Error {
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
-    this.name = "BadRequestError";
+    this.name = message;
+  }
+}
+
+class NotFoundError extends Error {
+  statusCode: number;
+  constructor(message: string, statusCode: number) {
+    super(message);
+    this.statusCode = statusCode;
+    this.name = message;
   }
 }
 
@@ -49,4 +58,5 @@ export {
   ServerNotFoundError,
   ForbiddenError,
   BadRequestError,
+  NotFoundError,
 };
