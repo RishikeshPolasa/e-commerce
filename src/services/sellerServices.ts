@@ -2,8 +2,6 @@ require("dotenv").config();
 import { v4 as uuidv4 } from "uuid";
 import query from "../utilities/sqlConnection";
 const getListOfSellers = async () => {
-  console.log("called");
-
   const seller = "seller";
   const list = await query("select * from users where user_type=?", [seller]);
   return list;
